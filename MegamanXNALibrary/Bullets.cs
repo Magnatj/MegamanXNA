@@ -19,11 +19,21 @@ namespace MegamanXNALibrary
         Vector2 mSpeed;
         public Vector2 mDirection;
 
-        public Rectangle rect;
-
-        public void LoadContent(ContentManager theContentManager)
+        public Rectangle HitBox
         {
-            base.LoadContent(theContentManager, "Santo Limon");
+            get { return new Rectangle((int)Position.X, (int)Position.Y, 16, 12); }
+        }
+
+        public void LoadContent(ContentManager theContentManager, string type)
+        {
+            if(type == "Megaman")
+                base.LoadContent(theContentManager, "Santo Limon");
+
+            else if(type == "Fire")
+                base.LoadContent(theContentManager, "Fire bullet");
+
+            else if(type == "Rock")
+                base.LoadContent(theContentManager, "Rock bullet");
         }
         public void Update(GameTime theGameTime)
         {
@@ -36,7 +46,7 @@ namespace MegamanXNALibrary
                 base.Update(theGameTime, mSpeed, mDirection);
             }
         }
-        public override void Draw(SpriteBatch theSpriteBatch)
+        public override void DrawBullets(SpriteBatch theSpriteBatch)
         {
             if (Visible == true)
             {
@@ -49,7 +59,6 @@ namespace MegamanXNALibrary
             mStartPosition = theStartPosition;
             mSpeed = theSpeed;
             mDirection = theDirection; Visible = true;
-            rect = new Rectangle((int)Position.X, (int)Position.Y, 30, 30);
         }
     }
 }

@@ -11,31 +11,23 @@ using Microsoft.Xna.Framework.Media;
 
 namespace MegamanXNALibrary
 {
-    public class Megaman : Sprite, IMegaman
+    public class RockMegamanDecorator : MegamanDecorator
     {
-        public List<Bullets> mBullets = new List<Bullets>();
+        //public new List<Bullets> mBullets = new List<Bullets>();
         ContentManager mContentManager;
 
         public Rectangle HitBox
         {
-            get { return new Rectangle((int) Position.X, (int) Position.Y, Size.Width, Size.Height); }
+            get { return new Rectangle((int)Position.X, (int)Position.Y, Size.Width, Size.Height); }
         }
 
-        const string MEGAMAN_ASSETNAME = "Sprite2";
-        const string PASO_DERECHA = "Sprite6";
-        const string PASO_DERECHA2 = "Sprite7";
-        const string PASO_DERECHA3 = "Sprite8";
-        const string BRINCO_DERECHA = "Sprite10";
+        const string MEGAMAN_ASSETNAME = "RockD2";
 
-        const int START_POSITION_X = 100;
-        const int START_POSITION_Y = 416;
         const int MEGAMAN_SPEED = 160;
         const int MOVE_UP = -1;
         const int MOVE_DOWN = 1;
         const int MOVE_LEFT = -1;
         const int MOVE_RIGHT = 1;
-
-        public bool Activo { get; set; }
 
         Vector2 mStartingPosition = Vector2.Zero;
 
@@ -49,26 +41,22 @@ namespace MegamanXNALibrary
         Vector2 mSpeed = Vector2.Zero;
         KeyboardState mPreviousKeyboardState;
 
-        public void LoadContent(ContentManager theContentManager)
+        public override void LoadContent(ContentManager theContentManager)
         {
             mContentManager = theContentManager;
-            if(mBullets.Count > 0)
             foreach (Bullets aLemon in mBullets)
             {
-                aLemon.LoadContent(theContentManager, "Megaman");
+                aLemon.LoadContent(theContentManager, "Rock");
             }
-            Position = new Vector2(START_POSITION_X, START_POSITION_Y);
             base.LoadContent(theContentManager, MEGAMAN_ASSETNAME);
-
         }
-        public void Update(GameTime theGameTime)
+
+        public override void Update(GameTime theGameTime)
         {
             KeyboardState aCurrentKeyboardState = Keyboard.GetState();
 
             UpdateMovement(aCurrentKeyboardState);
             UpdateJump(aCurrentKeyboardState);
-
-            if(Activo)
             UpdateBullets(theGameTime, aCurrentKeyboardState);
 
 
@@ -76,7 +64,8 @@ namespace MegamanXNALibrary
 
             base.Update(theGameTime, mSpeed, mDirection);
         }
-        public void UpdateBullets(GameTime theGameTime, KeyboardState aCurrentKeyboardState)
+
+        public override void UpdateBullets(GameTime theGameTime, KeyboardState aCurrentKeyboardState)
         {
             foreach (Bullets aLemon in mBullets)
             {
@@ -96,7 +85,8 @@ namespace MegamanXNALibrary
                 Shoot();
             }
         }
-        public void Shoot()
+
+        public override void Shoot()
         {
             if (mCurrentState == State.Walking)
             {
@@ -115,7 +105,7 @@ namespace MegamanXNALibrary
                     if (aCreateNew == true)
                     {
                         Bullets aLemon = new Bullets();
-                        aLemon.LoadContent(mContentManager, "Megaman");
+                        aLemon.LoadContent(mContentManager, "Rock");
                         aLemon.Shoot(Position + new Vector2(Size.Width / 2, Size.Height / 2), new Vector2(200, 200), new Vector2(1, 0));
                         mBullets.Add(aLemon);
                     }
@@ -135,7 +125,7 @@ namespace MegamanXNALibrary
                     if (aCreateNew == true)
                     {
                         Bullets aLemon = new Bullets();
-                        aLemon.LoadContent(mContentManager, "Megaman");
+                        aLemon.LoadContent(mContentManager, "Rock");
                         aLemon.Shoot(Position + new Vector2(Size.Width / 2, Size.Height / 2), new Vector2(200, 200), new Vector2(1, 0));
                         mBullets.Add(aLemon);
                     }
@@ -155,7 +145,7 @@ namespace MegamanXNALibrary
                     if (aCreateNew == true)
                     {
                         Bullets aLemon = new Bullets();
-                        aLemon.LoadContent(mContentManager, "Megaman");
+                        aLemon.LoadContent(mContentManager, "Rock");
                         aLemon.Shoot(Position + new Vector2(-Size.Width / 2, Size.Height / 2), new Vector2(-200, 200), new Vector2(-1, 0));
                         mBullets.Add(aLemon);
                     }
@@ -179,7 +169,7 @@ namespace MegamanXNALibrary
                     if (aCreateNew == true)
                     {
                         Bullets aLemon = new Bullets();
-                        aLemon.LoadContent(mContentManager, "Megaman");
+                        aLemon.LoadContent(mContentManager, "Rock");
                         aLemon.Shoot(Position + new Vector2(Size.Width / 2, Size.Height / 2), new Vector2(200, 200), new Vector2(1, 0));
                         mBullets.Add(aLemon);
                     }
@@ -199,7 +189,7 @@ namespace MegamanXNALibrary
                     if (aCreateNew == true)
                     {
                         Bullets aLemon = new Bullets();
-                        aLemon.LoadContent(mContentManager, "Megaman");
+                        aLemon.LoadContent(mContentManager, "Rock");
                         aLemon.Shoot(Position + new Vector2(Size.Width / 2, Size.Height / 2), new Vector2(200, 200), new Vector2(1, 0));
                         mBullets.Add(aLemon);
                     }
@@ -220,22 +210,22 @@ namespace MegamanXNALibrary
                     if (aCreateNew == true)
                     {
                         Bullets aLemon = new Bullets();
-                        aLemon.LoadContent(mContentManager, "Megaman");
+                        aLemon.LoadContent(mContentManager, "Rock");
                         aLemon.Shoot(Position + new Vector2(-Size.Width / 2, Size.Height / 2), new Vector2(-200, 200), new Vector2(-1, 0));
                         mBullets.Add(aLemon);
                     }
                 }
             }
         }
+
         public override void Draw(SpriteBatch theSpriteBatch)
         {
             foreach (Bullets aLemon in mBullets)
-            {
                 aLemon.Draw(theSpriteBatch);
-            }
             base.Draw(theSpriteBatch);
         }
-        public void UpdateJump(KeyboardState aCurrentKeyboardState)
+
+        public override void UpdateJump(KeyboardState aCurrentKeyboardState)
         {
             if (mCurrentState == State.Walking)
             {
@@ -286,7 +276,8 @@ namespace MegamanXNALibrary
                 }
             }
         }
-        public void Jump()
+
+        public override void Jump()
         {
             if (mCurrentState != State.Jumping)
             {
@@ -296,7 +287,8 @@ namespace MegamanXNALibrary
                 mSpeed = new Vector2(MEGAMAN_SPEED, MEGAMAN_SPEED);
             }
         }
-        public void UpdateMovement(KeyboardState aCurrentKeyboardState)
+
+        public override void UpdateMovement(KeyboardState aCurrentKeyboardState)
         {
             if (mCurrentState == State.Walking)
             {
@@ -319,6 +311,13 @@ namespace MegamanXNALibrary
                     }
                 }
             }
+        }
+
+        public RockMegamanDecorator(IMegaman IMegamanDecorator, Vector2 position)
+            : base(IMegamanDecorator)
+        {
+            _megamanDecorator = IMegamanDecorator;
+            Position = position;
         }
     }
 }

@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Bullets.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="FireMegamanDecorator.cs" />
     <Compile Include="GameScreen.cs" />
     <Compile Include="GameStates.cs" />
     <Compile Include="IMegaman.cs" />
@@ -68,9 +69,13 @@
     <Compile Include="Level.cs" />
     <Compile Include="LifeBars.cs" />
     <Compile Include="Megaman.cs" />
+    <Compile Include="MegamanContext.cs" />
+    <Compile Include="MegamanDecorator.cs" />
+    <Compile Include="MegamanFactory.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protoman.cs" />
+    <Compile Include="RockMegamanDecorator.cs" />
     <Compile Include="SongPlaylist.cs" />
     <Compile Include="Sprite.cs" />
   </ItemGroup>

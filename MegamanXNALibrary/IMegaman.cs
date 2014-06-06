@@ -12,11 +12,14 @@ namespace MegamanXNALibrary
 {
     public interface IMegaman
     {
-        void UpdateBullets(GameTime theGameTime, KeyboardState aCurrentKeyboardState);
+        void LoadContent(ContentManager theContentManager);
+        void Update(GameTime theGameTime);
+        void UpdateBullets(Microsoft.Xna.Framework.GameTime theGameTime, Microsoft.Xna.Framework.Input.KeyboardState aCurrentKeyboardState);
         void Shoot();
-        void UpdateJump(KeyboardState aCurrentKeyboardState);
+        void UpdateJump(Microsoft.Xna.Framework.Input.KeyboardState aCurrentKeyboardState);
         void Jump();
-        void AnimateRight(GameTime gameTime);
-        void AnimateLeft(GameTime gameTime);
+        void UpdateMovement(KeyboardState aCurrentKeyboardState);
+        //void AnimateRight(GameTime gameTime);
+        //void AnimateLeft(GameTime gameTime);
     }
 }

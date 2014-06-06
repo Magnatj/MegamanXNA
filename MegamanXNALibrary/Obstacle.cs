@@ -19,6 +19,11 @@ namespace MegamanXNALibrary
 
         public Vector2 Origin;
 
+        public Rectangle HitBox
+        {
+            get { return new Rectangle((int)position.X, (int)position.Y, ObstacleTexture.Width, ObstacleTexture.Height); }
+        }
+
         public Texture2D ObstacleTexture;
         public Rectangle ObstacleFrame;
         public Rectangle ObstacleTop;

@@ -19,6 +19,7 @@ namespace MegamanXNAGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont font;
 
         Texture2D Electivo;
         Rectangle elige;
@@ -42,6 +43,9 @@ namespace MegamanXNAGame
         private GameScreen creditScreen;
         private GameScreen protoScreen;
 
+        private MegamanDecorator specialMegaman;
+        private MegamanFactory factory = new MegamanFactory();
+
         GameStates gameState = GameStates.IntroScreen;
 
 
@@ -60,8 +64,9 @@ namespace MegamanXNAGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            mMegaSprite = new Megaman(this, Content.Load<Texture2D>("Linea Derecha 2"), new Vector2(100, 428), 22, 24);
+            mMegaSprite = new Megaman();
             mProtoSprite = new Protoman(this, Content.Load<Texture2D>("ProtoSolo"), new Vector2(500, 428), 22, 24);
+            font = Content.Load<SpriteFont>("GameFont");
             //mMegaSprite = new Megaman();
 
             color = new Color(255, 255, 255);
@@ -79,7 +84,7 @@ namespace MegamanXNAGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            SongPlaylist.AddSong(this,"Intro Song");
+            SongPlaylist.AddSong(this, "Intro Song");
             SongPlaylist.AddSong(this, "Go home and be a family man");
 
             Rectangle fullScreenRectangle = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -102,7 +107,7 @@ namespace MegamanXNAGame
             piso = Content.Load<Texture2D>("Terreno completo para el nivel");
             pisoFrame = new Rectangle(0, 440, (int)(piso.Width), (int)(piso.Height));
 
-            obstacle = new Obstacle(this,"Piedra sprite", 200, 408 );
+            obstacle = new Obstacle(this, "Piedra sprite", 200, 408);
         }
 
         /// <summary>
@@ -114,6 +119,55 @@ namespace MegamanXNAGame
             // TODO: Unload any non ContentManager content here
         }
 
+        void DetectBulletCollition(GameTime gameTime)
+        {
+            if (mMegaSprite.Activo)
+            {
+                for (int i = 0; i < mMegaSprite.mBullets.Count; i++)
+                {
+                    if (mMegaSprite.mBullets[i].HitBox.Intersects(mProtoSprite.HitBox) &&
+                        mMegaSprite.mBullets[i].Visible == true)
+                    {
+                        protoBar.BlackRect.Height += 2;
+                        if (protoBar.BlackRect.Height >= 68)
+                        {
+                            protoBar.BlackRect.Height = 0;
+                            gameState = GameStates.WinScreen;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        void DetectSpecialBulletCollition(GameTime gameTime)
+        {
+            for (int i = 0; i < specialMegaman.mBullets.Count; i++)
+            {
+                if (specialMegaman.mBullets[i].HitBox.Intersects(mProtoSprite.HitBox) &&
+                    specialMegaman.mBullets[i].Visible == true && specialMegaman is RockMegamanDecorator)
+                {
+                    protoBar.BlackRect.Height += 4;
+                    if (protoBar.BlackRect.Height >= 68)
+                    {
+                        protoBar.BlackRect.Height = 0;
+                        gameState = GameStates.WinScreen;
+                    }
+                }
+
+                else if (specialMegaman.mBullets[i].HitBox.Intersects(mProtoSprite.HitBox) &&
+                    specialMegaman.mBullets[i].Visible == true && specialMegaman is FireMegamanDecorator)
+                {
+                    protoBar.BlackRect.Height += 10;
+                    if (protoBar.BlackRect.Height >= 68)
+                    {
+                        protoBar.BlackRect.Height = 0;
+                        gameState = GameStates.WinScreen;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -121,11 +175,15 @@ namespace MegamanXNAGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            #region Game States
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
             mMegaSprite.Update(gameTime);
+
+            if(specialMegaman!=null)
+                specialMegaman.Update(gameTime);
 
             if (gameState == GameStates.CreditScreen)
             {
@@ -186,6 +244,7 @@ namespace MegamanXNAGame
                     Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
                     gameState = GameStates.GameScreen;
+                    mMegaSprite.Activo = true;
                     mMegaSprite.mBullets = new List<Bullets>();
                 }
 
@@ -193,6 +252,34 @@ namespace MegamanXNAGame
                     Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
                     gameState = GameStates.CreditScreen;
+                }
+            }
+            #endregion
+
+            #region Hidden Tricks
+
+            if (Keyboard.GetState().IsKeyDown(Keys.C) && mMegaSprite.Position.Y == 416)
+            {
+                if (specialMegaman == null)
+                {
+                    specialMegaman = factory.CrearMegaman("Fire", mMegaSprite.Position);
+                    specialMegaman.LoadContent(this.Content);
+                    specialMegaman.mBullets = new List<Bullets>();
+                    mMegaSprite.Activo = false;
+                }
+
+                else if (specialMegaman is FireMegamanDecorator)
+                {
+                    specialMegaman = factory.CrearMegaman("Rock", mMegaSprite.Position);
+                    specialMegaman.LoadContent(this.Content);
+                    specialMegaman.mBullets = new List<Bullets>();
+                    mMegaSprite.Activo = false;
+                }
+
+                else if (specialMegaman is RockMegamanDecorator)
+                {
+                    specialMegaman = null;
+                    mMegaSprite.Activo = true;
                 }
             }
 
@@ -239,6 +326,7 @@ namespace MegamanXNAGame
                     protoBar.BlackRect.Height += 2;
                 }
             }
+            #endregion
 
             mProtoSprite.Update(gameTime);
 
@@ -265,68 +353,80 @@ namespace MegamanXNAGame
 
             SongPlaylist.UniqueInstance().Play();
 
-            if (obstacle.ObstacleFrame.Intersects(mProtoSprite.GetRectangle()))
+            #region Normal Megaman Collition
+            if (obstacle.ObstacleFrame.Intersects(mProtoSprite.HitBox))
             {
-                protoBar.BlackRect.Height += 2;
-                if (protoBar.BlackRect.Height == 68)
+                mProtoSprite.Continua = false;
+
+                if (mProtoSprite.HitBox.Intersects(obstacle.ObstacleTop))
                 {
-                    protoBar.BlackRect.Height = 68;
-                    protoBar.BlackRect.Height -= 2;
-                    gameState = GameStates.WinScreen;
+                    mProtoSprite.Position.Y = obstacle.ObstacleFrame.Top - mProtoSprite.Size.Height + 1;
                 }
             }
 
-            for (int i = 0; i < mMegaSprite.mBullets.Count; i++)
-            {
-                if (mMegaSprite.mBullets[i].rect.Intersects(mProtoSprite.GetRectangle()))
-                {
-                    mProtoSprite.ProtomanFrame.Height += 2;
-                    if (mProtoSprite.ProtomanFrame.Height == 68)
-                    {
-                        mProtoSprite.ProtomanFrame.Height = 68;
-                        mProtoSprite.ProtomanFrame.Height -= 2;
-                        gameState = GameStates.WinScreen;
-                    }
-                }
-            }
+            DetectBulletCollition(gameTime);
 
-            if (mProtoSprite.GetRectangle().Intersects(mMegaSprite.GetRectangle()))
+            if (mProtoSprite.HitBox.Intersects(mMegaSprite.HitBox))
             {
                 megaBar.BlackRect.Height += 2;
 
-                if (megaBar.BlackRect.Height == 68)
+                if (megaBar.BlackRect.Height >= 68)
                 {
-                    megaBar.BlackRect.Height = 68;
-                    megaBar.BlackRect.Height -= 2;
+                    megaBar.BlackRect.Height = 0;
                     gameState = GameStates.GameOverScreen;
                 }
 
             }
 
-            if (obstacle.ObstacleFrame.Intersects(mMegaSprite.GetRectangle()))
+            if (obstacle.ObstacleFrame.Intersects(mMegaSprite.HitBox))
             {
-                if (mMegaSprite.MegamanFrame.Intersects(obstacle.ObstacleRight))
+                if (mMegaSprite.HitBox.Intersects(obstacle.ObstacleRight))
                 {
                     mMegaSprite.Position.X = obstacle.ObstacleFrame.Right;
                 }
 
-                else if (mMegaSprite.MegamanFrame.Intersects(obstacle.ObstacleLeft))
+                else if (mMegaSprite.HitBox.Intersects(obstacle.ObstacleLeft))
                 {
                     mMegaSprite.Position.X = obstacle.ObstacleFrame.Left - mMegaSprite.Size.Width - 1;
                 }
 
-                else if (mMegaSprite.MegamanFrame.Intersects(obstacle.ObstacleTop))
+                else if (mMegaSprite.HitBox.Intersects(obstacle.ObstacleTop))
                 {
                     mMegaSprite.Position.Y = obstacle.ObstacleFrame.Top - mMegaSprite.Size.Height + 1;
                 }
             }
 
 
-            if (pisoFrame.Intersects(mMegaSprite.GetRectangle()))
+            if (pisoFrame.Intersects(mMegaSprite.HitBox))
             {
                 mMegaSprite.Position.Y = pisoFrame.Top - mMegaSprite.Size.Height + 1;
             }
+            #endregion
 
+            #region Special Megaman Collition
+            if (specialMegaman != null && obstacle.ObstacleFrame.Intersects(specialMegaman.HitBox))
+            {
+                if (specialMegaman.HitBox.Intersects(obstacle.ObstacleRight))
+                {
+                    specialMegaman.Position.X = obstacle.ObstacleFrame.Right;
+                }
+
+                else if (specialMegaman.HitBox.Intersects(obstacle.ObstacleLeft))
+                {
+                    specialMegaman.Position.X = obstacle.ObstacleFrame.Left - specialMegaman.Size.Width - 1;
+                }
+
+                else if (specialMegaman.HitBox.Intersects(obstacle.ObstacleTop))
+                {
+                    specialMegaman.Position.Y = obstacle.ObstacleFrame.Top - specialMegaman.Size.Height + 1;
+                }
+            }
+
+            if (specialMegaman != null)
+            {
+                DetectSpecialBulletCollition(gameTime);
+            }
+            #endregion
             switch (gameState)
             {
                 case GameStates.IntroScreen:
@@ -378,7 +478,7 @@ namespace MegamanXNAGame
 
             if (gameState == GameStates.GameScreen)
             {
-
+                mProtoSprite.Activo = true;
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
                 spriteBatch.Draw(protoScreen.ScreenTexture, protoScreen.ScreenFrame, Color.White);
                 spriteBatch.End();
@@ -390,13 +490,17 @@ namespace MegamanXNAGame
                 spriteBatch.End();
 
                 spriteBatch.Begin();
-                mProtoSprite.Draw(spriteBatch);
+                mProtoSprite.DrawBullets(spriteBatch);
                 mMegaSprite.Draw(spriteBatch);
-                mMegaSprite.DrawBullets(spriteBatch);
+                if(specialMegaman != null)
+                specialMegaman.Draw(spriteBatch);
                 spriteBatch.Draw(megaBar.LifeBar, megaBar.LifeFrame, Color.White);
                 spriteBatch.Draw(megaBar.LifeBar, megaBar.BlackRect, Color.Black);
                 spriteBatch.Draw(protoBar.LifeBar, protoBar.LifeFrame, Color.White);
                 spriteBatch.Draw(protoBar.LifeBar, protoBar.BlackRect, Color.Black);
+                spriteBatch.DrawString(font, mMegaSprite.mBullets.Count.ToString(), new Vector2(200, 30), Color.Blue);
+                if (specialMegaman != null)
+                    spriteBatch.DrawString(font, specialMegaman.mBullets.Count.ToString(), new Vector2(500, 30), Color.Red);
                 spriteBatch.End();
             }
 
@@ -423,6 +527,16 @@ namespace MegamanXNAGame
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
                 spriteBatch.Draw(creditScreen.ScreenTexture, creditScreen.ScreenFrame, color);
                 spriteBatch.End();
+            }
+
+            if (gameState != GameStates.GameScreen)
+            {
+                specialMegaman = null;
+                mProtoSprite.Activo = false;
+                mProtoSprite.Continua = true;
+                mMegaSprite.Position = new Vector2(100, 416);
+                mProtoSprite.Position = new Vector2(500, 428);
+                mMegaSprite.mBullets.Clear();
             }
 
             base.Draw(gameTime);
