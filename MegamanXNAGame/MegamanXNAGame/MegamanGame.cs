@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
+//using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -15,11 +15,13 @@ namespace MegamanXNAGame
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class MegamanGame : Microsoft.Xna.Framework.Game
+    public class MegamanGame : Microsoft.Xna.Framework.Game, ISubject
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont font;
+        private List<IObserver> observers = new List<IObserver>();
+        private Achievement protoAchievement = new MegamanXNALibrary.Achievement();
 
         Texture2D Electivo;
         Rectangle elige;
@@ -28,6 +30,7 @@ namespace MegamanXNAGame
 
         Protoman mProtoSprite;
         Megaman mMegaSprite;
+        private bool protomanDefeated = false;
 
         private LifeBars megaBar;
         private LifeBars protoBar;
@@ -67,6 +70,7 @@ namespace MegamanXNAGame
             mMegaSprite = new Megaman();
             mProtoSprite = new Protoman(this, Content.Load<Texture2D>("ProtoSolo"), new Vector2(500, 428), 22, 24);
             font = Content.Load<SpriteFont>("GameFont");
+            Register(protoAchievement);
             //mMegaSprite = new Megaman();
 
             color = new Color(255, 255, 255);
@@ -92,7 +96,7 @@ namespace MegamanXNAGame
             mMegaSprite.LoadContent(this.Content);
 
             introScreen = new GameScreen(this, "PrototipoFinal", fullScreenRectangle);
-            creditScreen = new GameScreen(this, "Creditos", fullScreenRectangle);
+            creditScreen = new GameScreen(this, "InstructionScreen", fullScreenRectangle);
             menuScreen = new GameScreen(this, "Protoman Menu", fullScreenRectangle);
             loseScreen = new GameScreen(this, "You suck!!!", fullScreenRectangle);
             winScreen = new GameScreen(this, "You win!!!", fullScreenRectangle);
@@ -131,6 +135,7 @@ namespace MegamanXNAGame
                         protoBar.BlackRect.Height += 2;
                         if (protoBar.BlackRect.Height >= 68)
                         {
+                            Notificate("ProtomanDefeated");
                             protoBar.BlackRect.Height = 0;
                             gameState = GameStates.WinScreen;
                         }
@@ -150,6 +155,7 @@ namespace MegamanXNAGame
                     protoBar.BlackRect.Height += 4;
                     if (protoBar.BlackRect.Height >= 68)
                     {
+                        Notificate("ProtomanDefeated");
                         protoBar.BlackRect.Height = 0;
                         gameState = GameStates.WinScreen;
                     }
@@ -161,6 +167,7 @@ namespace MegamanXNAGame
                     protoBar.BlackRect.Height += 10;
                     if (protoBar.BlackRect.Height >= 68)
                     {
+                        Notificate("ProtomanDefeated");
                         protoBar.BlackRect.Height = 0;
                         gameState = GameStates.WinScreen;
                     }
@@ -177,9 +184,12 @@ namespace MegamanXNAGame
         {
             #region Game States
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed &&
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                Unregister(protoAchievement);
                 this.Exit();
-
+            }
             mMegaSprite.Update(gameTime);
 
             if(specialMegaman!=null)
@@ -257,6 +267,16 @@ namespace MegamanXNAGame
             #endregion
 
             #region Hidden Tricks
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Add))
+            {
+                SongPlaylist.UniqueInstance().IncreaseVolume();
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Subtract))
+            {
+                SongPlaylist.UniqueInstance().DecreaseVolume();
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.C) && mMegaSprite.Position.Y == 416)
             {
@@ -343,6 +363,7 @@ namespace MegamanXNAGame
 
             if (gameState == GameStates.WinScreen)
             {
+                Notificate("ProtomanDefeated");
                 elige.X = 35;
                 elige.Y = 40;
                 megaBar.BlackRect.Height = 0;
@@ -432,7 +453,7 @@ namespace MegamanXNAGame
                 case GameStates.IntroScreen:
                     if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                     {
-                        gameState = GameStates.MenuScreen;
+                        gameState = GameStates.CreditScreen;
                         //Keyboard.GetState().IsKeyUp(Keys.Enter);
                         //if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                         //{
@@ -514,9 +535,14 @@ namespace MegamanXNAGame
 
             if (gameState == GameStates.WinScreen)
             {
+                Notificate("ProtomanDefeated");
                 color.A++;
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
                 spriteBatch.Draw(winScreen.ScreenTexture, winScreen.ScreenFrame, color);
+                spriteBatch.End();
+
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
+                spriteBatch.Draw(protoAchievement.AchievementTexture, protoAchievement.AchievementFrame, color);
                 spriteBatch.End();
             }
 
@@ -540,6 +566,24 @@ namespace MegamanXNAGame
             }
 
             base.Draw(gameTime);
+        }
+
+        public void Register(IObserver observer)
+        {
+            observers.Add(observer);
+        }
+
+        public void Unregister(IObserver observer)
+        {
+            observers.Remove(observer);
+        }
+
+        public void Notificate(string path)
+        {
+            foreach (var observer in observers)
+            {
+                observer.Update(this, path);
+            }
         }
     }
 }

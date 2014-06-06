@@ -59,13 +59,16 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Achievement.cs" />
     <Compile Include="Bullets.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="FireMegamanDecorator.cs" />
     <Compile Include="GameScreen.cs" />
     <Compile Include="GameStates.cs" />
     <Compile Include="IMegaman.cs" />
+    <Compile Include="IObserver.cs" />
     <Compile Include="ISpriteBasedGame.cs" />
+    <Compile Include="ISubject.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="LifeBars.cs" />
     <Compile Include="Megaman.cs" />
