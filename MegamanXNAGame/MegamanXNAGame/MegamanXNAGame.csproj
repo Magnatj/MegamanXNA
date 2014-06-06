@@ -74,7 +74,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
+    <Compile Include="MegamanGame.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -83,6 +83,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MegamanXNALibrary\MegamanXNALibrary.csproj">
+      <Project>{599ccab9-be9e-4530-9003-4cb1d44ba9ab}</Project>
+      <Name>MegamanXNALibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MegamanXNAGameContent\MegamanXNAGameContent.contentproj">
       <Name>MegamanXNAGameContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>

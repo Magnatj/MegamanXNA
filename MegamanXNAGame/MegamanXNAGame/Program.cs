@@ -10,7 +10,7 @@ namespace MegamanXNAGame
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1())
+            using (MegamanGame game = new MegamanGame())
             {
                 game.Run();
             }
