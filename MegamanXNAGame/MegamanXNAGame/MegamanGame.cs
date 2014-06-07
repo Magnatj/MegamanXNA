@@ -17,6 +17,7 @@ namespace MegamanXNAGame
     /// </summary>
     public class MegamanGame : Microsoft.Xna.Framework.Game, ISubject
     {
+        #region Variables
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont font;
@@ -46,18 +47,24 @@ namespace MegamanXNAGame
         private GameScreen creditScreen;
         private GameScreen protoScreen;
 
+        private const int ENEMY_LIFEBAR_X = 760;
+        private const int ENEMY_LIFEBAR_Y = 40;
+
+        private static Vector2 enemyStartPosition = new Vector2(500, 428);
+
         private MegamanDecorator specialMegaman;
         private MegamanFactory factory = new MegamanFactory();
 
+        private RobotMasters robotMaster;
+        private RobotMastersFactory enemyFactory = new RobotMastersFactory();
+
         GameStates gameState = GameStates.IntroScreen;
-
-
+        #endregion
         public MegamanGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
-
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -68,7 +75,9 @@ namespace MegamanXNAGame
         {
             // TODO: Add your initialization logic here
             mMegaSprite = new Megaman();
-            mProtoSprite = new Protoman(this, Content.Load<Texture2D>("ProtoSolo"), new Vector2(500, 428), 22, 24);
+            //mProtoSprite = new Protoman(this, Content.Load<Texture2D>("ProtoSolo"), new Vector2(500, 428), 22, 24);
+            robotMaster = enemyFactory.CreateRobotMaster("Protoman", this, Content.Load<Texture2D>("ProtoSolo"),
+                enemyStartPosition, 22, 24);
             font = Content.Load<SpriteFont>("GameFont");
             Register(protoAchievement);
             //mMegaSprite = new Megaman();
@@ -77,7 +86,6 @@ namespace MegamanXNAGame
 
             base.Initialize();
         }
-
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -88,6 +96,7 @@ namespace MegamanXNAGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            #region Load
             SongPlaylist.AddSong(this, "Intro Song");
             SongPlaylist.AddSong(this, "Go home and be a family man");
 
@@ -97,7 +106,7 @@ namespace MegamanXNAGame
 
             introScreen = new GameScreen(this, "PrototipoFinal", fullScreenRectangle);
             creditScreen = new GameScreen(this, "InstructionScreen", fullScreenRectangle);
-            menuScreen = new GameScreen(this, "Protoman Menu", fullScreenRectangle);
+            menuScreen = new GameScreen(this, "Final Menu", fullScreenRectangle);
             loseScreen = new GameScreen(this, "You suck!!!", fullScreenRectangle);
             winScreen = new GameScreen(this, "You win!!!", fullScreenRectangle);
             protoScreen = new GameScreen(this, "FONDO COMPLETO PROTOMAN", fullScreenRectangle);
@@ -112,8 +121,8 @@ namespace MegamanXNAGame
             pisoFrame = new Rectangle(0, 440, (int)(piso.Width), (int)(piso.Height));
 
             obstacle = new Obstacle(this, "Piedra sprite", 200, 408);
+            #endregion
         }
-
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
@@ -122,20 +131,27 @@ namespace MegamanXNAGame
         {
             // TODO: Unload any non ContentManager content here
         }
-
+        #region Collition
         void DetectBulletCollition(GameTime gameTime)
         {
             if (mMegaSprite.Activo)
             {
                 for (int i = 0; i < mMegaSprite.mBullets.Count; i++)
                 {
-                    if (mMegaSprite.mBullets[i].HitBox.Intersects(mProtoSprite.HitBox) &&
+                    if (mMegaSprite.mBullets[i].HitBox.Intersects(robotMaster.HitBox) &&
                         mMegaSprite.mBullets[i].Visible == true)
                     {
                         protoBar.BlackRect.Height += 2;
                         if (protoBar.BlackRect.Height >= 68)
                         {
-                            Notificate("ProtomanDefeated");
+                            if(robotMaster is Protoman)
+                                Notificate("ProtomanDefeated");
+                            else if(robotMaster is Gutsman)
+                                Notificate("GutsmanDefeated");
+                            else if(robotMaster is Fireman)
+                                Notificate("FiremanDefeated");
+                            else if(robotMaster is Iceman)
+                                Notificate("IcemanDefeated");
                             protoBar.BlackRect.Height = 0;
                             gameState = GameStates.WinScreen;
                         }
@@ -149,32 +165,46 @@ namespace MegamanXNAGame
         {
             for (int i = 0; i < specialMegaman.mBullets.Count; i++)
             {
-                if (specialMegaman.mBullets[i].HitBox.Intersects(mProtoSprite.HitBox) &&
+                if (specialMegaman.mBullets[i].HitBox.Intersects(robotMaster.HitBox) &&
                     specialMegaman.mBullets[i].Visible == true && specialMegaman is RockMegamanDecorator)
                 {
                     protoBar.BlackRect.Height += 4;
                     if (protoBar.BlackRect.Height >= 68)
                     {
-                        Notificate("ProtomanDefeated");
+                        if (robotMaster is Protoman)
+                            Notificate("ProtomanDefeated");
+                        else if (robotMaster is Gutsman)
+                            Notificate("GutsmanDefeated");
+                        else if (robotMaster is Fireman)
+                            Notificate("FiremanDefeated");
+                        else if (robotMaster is Iceman)
+                            Notificate("IcemanDefeated");
                         protoBar.BlackRect.Height = 0;
                         gameState = GameStates.WinScreen;
                     }
                 }
 
-                else if (specialMegaman.mBullets[i].HitBox.Intersects(mProtoSprite.HitBox) &&
+                else if (specialMegaman.mBullets[i].HitBox.Intersects(robotMaster.HitBox) &&
                     specialMegaman.mBullets[i].Visible == true && specialMegaman is FireMegamanDecorator)
                 {
                     protoBar.BlackRect.Height += 10;
                     if (protoBar.BlackRect.Height >= 68)
                     {
-                        Notificate("ProtomanDefeated");
+                        if (robotMaster is Protoman)
+                            Notificate("ProtomanDefeated");
+                        else if (robotMaster is Gutsman)
+                            Notificate("GutsmanDefeated");
+                        else if (robotMaster is Fireman)
+                            Notificate("FiremanDefeated");
+                        else if (robotMaster is Iceman)
+                            Notificate("IcemanDefeated");
                         protoBar.BlackRect.Height = 0;
                         gameState = GameStates.WinScreen;
                     }
                 }
             }
         }
-
+        #endregion
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -250,9 +280,51 @@ namespace MegamanXNAGame
                     }
                 }
 
+                Rectangle fullScreenRectangle = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+
+                if (elige.X >= 280 & elige.X <= 370 & elige.Y >= 35 & elige.Y <= 130 &
+                    Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    robotMaster = enemyFactory.CreateRobotMaster("Iceman", this, Content.Load<Texture2D>("IcemanIzq2"),
+                        enemyStartPosition, 27, 24);
+                    protoBar = new LifeBars(this, "Barra de vida Iceman", ENEMY_LIFEBAR_X, ENEMY_LIFEBAR_Y);
+                    protoScreen = new GameScreen(this, "FONDO COMPLETO ICEMAN", fullScreenRectangle);
+                    gameState = GameStates.GameScreen;
+                    mMegaSprite.Activo = true;
+                    mMegaSprite.mBullets = new List<Bullets>();
+                }
+
+                if (elige.X >= 280 & elige.X <= 370 & elige.Y >= 320 & elige.Y <= 420 &
+                    Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    robotMaster = enemyFactory.CreateRobotMaster("Fireman", this, Content.Load<Texture2D>("FiremanLeft"),
+                        enemyStartPosition, 31, 24);
+                    protoBar = new LifeBars(this, "Barra de vida Fireman", ENEMY_LIFEBAR_X, ENEMY_LIFEBAR_Y);
+                    protoScreen = new GameScreen(this, "FONDO COMPLETO FIREMAN", fullScreenRectangle);
+                    gameState = GameStates.GameScreen;
+                    mMegaSprite.Activo = true;
+                    mMegaSprite.mBullets = new List<Bullets>();
+                }
+
+                if (elige.X >= 25 & elige.X <= 150 & elige.Y >= 150 & elige.Y <= 250 &
+                    Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    robotMaster = enemyFactory.CreateRobotMaster("Gutsman", this, Content.Load<Texture2D>("Gust2"),
+                        enemyStartPosition, 32, 31);
+                    protoBar = new LifeBars(this, "Barra de vida Gutsman", ENEMY_LIFEBAR_X, ENEMY_LIFEBAR_Y);
+                    protoScreen = new GameScreen(this, "FONDO COMPLETO", fullScreenRectangle);
+                    gameState = GameStates.GameScreen;
+                    mMegaSprite.Activo = true;
+                    mMegaSprite.mBullets = new List<Bullets>();
+                }
+
                 if (elige.X >= 280 & elige.X <= 370 & elige.Y >= 150 & elige.Y <= 250 &
                     Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
+                    robotMaster = enemyFactory.CreateRobotMaster("Protoman", this, Content.Load<Texture2D>("ProtoSolo"),
+                        enemyStartPosition, 22, 24);
+                    protoBar = new LifeBars(this, "Barra de vida Protoman", ENEMY_LIFEBAR_X, ENEMY_LIFEBAR_Y);
+                    protoScreen = new GameScreen(this, "FONDO COMPLETO PROTOMAN", fullScreenRectangle);
                     gameState = GameStates.GameScreen;
                     mMegaSprite.Activo = true;
                     mMegaSprite.mBullets = new List<Bullets>();
@@ -348,8 +420,9 @@ namespace MegamanXNAGame
             }
             #endregion
 
-            mProtoSprite.Update(gameTime);
+            robotMaster.Update(gameTime);
 
+            #region Victory/Defeat ScreenState
             if (gameState == GameStates.GameOverScreen)
             {
                 elige.X = 35;
@@ -363,7 +436,14 @@ namespace MegamanXNAGame
 
             if (gameState == GameStates.WinScreen)
             {
-                Notificate("ProtomanDefeated");
+                if (robotMaster is Protoman)
+                    Notificate("ProtomanDefeated");
+                else if (robotMaster is Gutsman)
+                    Notificate("GutsmanDefeated");
+                else if (robotMaster is Fireman)
+                    Notificate("FiremanDefeated");
+                else if (robotMaster is Iceman)
+                    Notificate("IcemanDefeated");
                 elige.X = 35;
                 elige.Y = 40;
                 megaBar.BlackRect.Height = 0;
@@ -371,25 +451,26 @@ namespace MegamanXNAGame
                 if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                     gameState = GameStates.MenuScreen;
             }
+            #endregion
 
             SongPlaylist.UniqueInstance().Play();
 
             #region Normal Megaman Collition
-            if (obstacle.ObstacleFrame.Intersects(mProtoSprite.HitBox))
+            if (obstacle.ObstacleFrame.Intersects(robotMaster.HitBox))
             {
-                mProtoSprite.Continua = false;
+                robotMaster.Continua = false;
 
-                if (mProtoSprite.HitBox.Intersects(obstacle.ObstacleTop))
+                if (robotMaster.HitBox.Intersects(obstacle.ObstacleTop))
                 {
-                    mProtoSprite.Position.Y = obstacle.ObstacleFrame.Top - mProtoSprite.Size.Height + 1;
+                    robotMaster.Position.Y = obstacle.ObstacleFrame.Top - robotMaster.Size.Height + 1;
                 }
             }
 
             DetectBulletCollition(gameTime);
 
-            if (mProtoSprite.HitBox.Intersects(mMegaSprite.HitBox))
+            if (robotMaster.HitBox.Intersects(mMegaSprite.HitBox))
             {
-                megaBar.BlackRect.Height += 2;
+                megaBar.BlackRect.Height += 6;
 
                 if (megaBar.BlackRect.Height >= 68)
                 {
@@ -448,6 +529,7 @@ namespace MegamanXNAGame
                 DetectSpecialBulletCollition(gameTime);
             }
             #endregion
+
             switch (gameState)
             {
                 case GameStates.IntroScreen:
@@ -467,7 +549,6 @@ namespace MegamanXNAGame
 
             base.Update(gameTime);
         }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -499,7 +580,7 @@ namespace MegamanXNAGame
 
             if (gameState == GameStates.GameScreen)
             {
-                mProtoSprite.Activo = true;
+                robotMaster.Activo = true;
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
                 spriteBatch.Draw(protoScreen.ScreenTexture, protoScreen.ScreenFrame, Color.White);
                 spriteBatch.End();
@@ -511,7 +592,7 @@ namespace MegamanXNAGame
                 spriteBatch.End();
 
                 spriteBatch.Begin();
-                mProtoSprite.DrawBullets(spriteBatch);
+                robotMaster.Draw(spriteBatch);
                 mMegaSprite.Draw(spriteBatch);
                 if(specialMegaman != null)
                 specialMegaman.Draw(spriteBatch);
@@ -535,7 +616,14 @@ namespace MegamanXNAGame
 
             if (gameState == GameStates.WinScreen)
             {
-                Notificate("ProtomanDefeated");
+                if (robotMaster is Protoman)
+                    Notificate("ProtomanDefeated");
+                else if (robotMaster is Gutsman)
+                    Notificate("GutsmanDefeated");
+                else if (robotMaster is Fireman)
+                    Notificate("FiremanDefeated");
+                else if (robotMaster is Iceman)
+                    Notificate("IcemanDefeated");
                 color.A++;
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied);
                 spriteBatch.Draw(winScreen.ScreenTexture, winScreen.ScreenFrame, color);
@@ -558,26 +646,23 @@ namespace MegamanXNAGame
             if (gameState != GameStates.GameScreen)
             {
                 specialMegaman = null;
-                mProtoSprite.Activo = false;
-                mProtoSprite.Continua = true;
+                robotMaster.Activo = false;
+                robotMaster.Continua = true;
                 mMegaSprite.Position = new Vector2(100, 416);
-                mProtoSprite.Position = new Vector2(500, 428);
+                robotMaster.Position = new Vector2(500, 428);
                 mMegaSprite.mBullets.Clear();
             }
 
             base.Draw(gameTime);
         }
-
         public void Register(IObserver observer)
         {
             observers.Add(observer);
         }
-
         public void Unregister(IObserver observer)
         {
             observers.Remove(observer);
         }
-
         public void Notificate(string path)
         {
             foreach (var observer in observers)

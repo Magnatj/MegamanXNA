@@ -11,14 +11,12 @@ using Microsoft.Xna.Framework.Media;
 
 namespace MegamanXNALibrary
 {
-    public class Protoman : RobotMasters
+    public class Iceman : RobotMasters
     {
-        //public bool Continua;
-
         Microsoft.Xna.Framework.Game Parent;
 
-        Texture2D ProtomanTexture;
-        public Rectangle ProtomanFrame;
+        Texture2D IcemanTexture;
+        public Rectangle IcemanFrame;
 
         public override Rectangle HitBox
         {
@@ -41,10 +39,10 @@ namespace MegamanXNALibrary
         //public bool Activo { get; set; }
         bool jumping;
 
-        public Protoman(Microsoft.Xna.Framework.Game newParent, Texture2D newProtoman, Vector2 newPosition, int newframeHeight, int newframeWidth)
+        public Iceman(Microsoft.Xna.Framework.Game newParent, Texture2D newIceman, Vector2 newPosition, int newframeHeight, int newframeWidth)
         {
             Parent = newParent;
-            ProtomanTexture = newProtoman;
+            IcemanTexture = newIceman;
             position = newPosition;
             frameHeight = newframeHeight;
             frameWidth = newframeWidth;
@@ -58,8 +56,8 @@ namespace MegamanXNALibrary
 
         public override void Update(GameTime gameTime)
         {
-            ProtomanFrame = new Rectangle(currentFrame * frameWidth, 0, frameWidth, frameHeight);
-            origin = new Vector2(ProtomanFrame.Width / 2, ProtomanFrame.Height / 2);
+            IcemanFrame = new Rectangle(currentFrame * frameWidth, 0, frameWidth, frameHeight);
+            origin = new Vector2(IcemanFrame.Width / 2, IcemanFrame.Height / 2);
             if (Activo)
             {
                 position = position + velocity;
@@ -68,21 +66,21 @@ namespace MegamanXNALibrary
                 switch (Continua)
                 {
                     case true:
-                        frameHeight = 24;
-                        frameWidth = 28;
-                        ProtomanTexture = Parent.Content.Load<Texture2D>("ProtoBossIzq1");
-                        AnimateLeft(gameTime);
-                        velocity.X = -4;
-                        if (position.X != 12) return;
+                        //frameHeight = 24;
+                        //frameWidth = 28;
+                        IcemanTexture = Parent.Content.Load<Texture2D>("IcemanIzq2");
+                        //AnimateLeft(gameTime);
+                        velocity.X = -7;
+                        if (position.X >= 14) return;
                         Continua = false;
                         break;
                     case false:
-                        frameHeight = 24;
-                        frameWidth = 28;
-                        ProtomanTexture = Parent.Content.Load<Texture2D>("ProtoDer1");
-                        AnimateRight(gameTime);
-                        velocity.X = 4;
-                        if (position.X != 788) return;
+                        //frameHeight = 24;
+                        //frameWidth = 28;
+                        IcemanTexture = Parent.Content.Load<Texture2D>("IcemanDer2");
+                        //AnimateRight(gameTime);
+                        velocity.X = 7;
+                        if (position.X <= 788) return;
                         Continua = true;
                         currentFrame = 0;
                         break;
@@ -94,7 +92,7 @@ namespace MegamanXNALibrary
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(ProtomanTexture, position, ProtomanFrame,
+            spriteBatch.Draw(IcemanTexture, position, IcemanFrame,
             Color.White, 0f, origin, 1.0f, SpriteEffects.None, 0);
         }
         public override void AnimateRight(GameTime gameTime)

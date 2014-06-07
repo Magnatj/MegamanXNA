@@ -100,7 +100,7 @@ namespace MegamanXNALibrary
         {
             if (mCurrentState == State.Walking)
             {
-                if (Keyboard.GetState().IsKeyUp(Keys.Right & Keys.Left))
+                if (Keyboard.GetState().IsKeyUp(Keys.Left & Keys.Right))
                 {
                     bool aCreateNew = true;
                     foreach (Bullets aLemon in mBullets)

@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MegamanXNALibrary.Achievement">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQABAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Achievement.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MegamanXNALibrary.Bullets">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQQAAAAACAABAAABAAAAAAAEAAAAAAIAwAAAAAAAAQ=</HashCode>
+      <FileName>Bullets.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.Fireman">
+    <Position X="13.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQACAAAggAAAgAoBIAAYACAQAAAQAAgAAQgEAABAAA=</HashCode>
+      <FileName>Fireman.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.FireMegamanDecorator">
+    <Position X="3.5" Y="7.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="MegamanXNALibrary.FireMegamanDecorator.State" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>FireMegamanDecorator.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABQQAAAEAgAiBkAARoAAAAAEAAAAgAIEggAAAAAAAAQ=</HashCode>
+      <FileName>FireMegamanDecorator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.GameScreen">
+    <Position X="18.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>GameScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.Gutsman">
+    <Position X="9.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQACAAAggAAEgAgBIAAYACAAAAAQAAgAAQgEAABCAA=</HashCode>
+      <FileName>Gutsman.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.Iceman">
+    <Position X="15.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQACAAAggAAAgAgBICAYACAAAAAQAAgAAQgEEABAAA=</HashCode>
+      <FileName>Iceman.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.LifeBars">
+    <Position X="20.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABABAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>LifeBars.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.Megaman">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="MegamanXNALibrary.Megaman.State" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Megaman.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AhQQAAAEAgAiBkABRoAAAAAEAQAAsAIk4gAAAAAAAAQ=</HashCode>
+      <FileName>Megaman.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MegamanXNALibrary.MegamanDecorator">
+    <Position X="5.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAgACBAABBAAAAAAEAAAAAAIAAAAAAAAAgAQ=</HashCode>
+      <FileName>MegamanDecorator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MegamanXNALibrary.MegamanFactory">
+    <Position X="22.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>MegamanFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.Obstacle">
+    <Position X="18.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAgIABAABYAAAAAAAAAAAAAAAAAgAAgA=</HashCode>
+      <FileName>Obstacle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.Protoman">
+    <Position X="11.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQACAAAggAAAgAgBIAAYACAAAAAQEAgAAQgEAABABA=</HashCode>
+      <FileName>Protoman.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.RobotMasters">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQACAAAAgAAAAIABAAAAAAAAAAAAAAgAAAAEAAAAAA=</HashCode>
+      <FileName>RobotMasters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.RobotMastersFactory">
+    <Position X="22.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RobotMastersFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.RockMegamanDecorator">
+    <Position X="7.5" Y="7.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="MegamanXNALibrary.RockMegamanDecorator.State" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>RockMegamanDecorator.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABQQAAAEAgAiBkAARoAAAAAEAAAAgAIEggAAAAAAAAQ=</HashCode>
+      <FileName>RockMegamanDecorator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.SongPlaylist">
+    <Position X="20.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABEAAAAQAIAAAAAAIAAAAAEAAAIAAAQoAAAAAACAAA=</HashCode>
+      <FileName>SongPlaylist.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MegamanXNALibrary.Sprite">
+    <Position X="7.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAggAgAAoAAAAAAAAACIAAAQAAAAAAAAQ=</HashCode>
+      <FileName>Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="MegamanXNALibrary.IMegaman">
+    <Position X="20.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAgACBAAAAAAAAAAEAAAAAAIAAAAAAAAAAAQ=</HashCode>
+      <FileName>IMegaman.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MegamanXNALibrary.IObserver">
+    <Position X="22.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IObserver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MegamanXNALibrary.ISubject">
+    <Position X="22.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>ISubject.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="MegamanXNALibrary.GameStates">
+    <Position X="18.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQIAAAIAAABAAAAAAAAAAAAgAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>GameStates.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
